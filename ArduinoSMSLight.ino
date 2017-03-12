@@ -6,6 +6,7 @@ SoftwareSerial mySerial(7, 8);
 
 String strCommand = "";
 String strBuffer = "";
+const String MASTERPHONE = "+8613504638667"; //your phone
 
 void waitResponese()
 {
@@ -127,17 +128,18 @@ void loop()
         Serial.println("Found SM: "+index);
         sendATCommand("AT+CMGR="+index);
       } else if (strBuffer.startsWith("CMGR:")) {
-        int index = strBuffer.indexOf('\n');
-        Serial.println("Found New line at col: "+index);
-        strCommand=strBuffer.substring(index+1, index+3);
-        strCommand.toLowerCase();
+        if (strBuffer.substring(20, 34) == MASTERPHONE) { // if your phone 
+          int index = strBuffer.indexOf('\n');
+          Serial.println("Found New line at col: "+index);
+          strCommand=strBuffer.substring(index+1, index+3);
+          strCommand.toLowerCase();
+          handleCommand();  //run command
+        }
       } else {
 //        Serial.println("Not Match");
       }
     }
   }
-
-  handleCommand();
 }
 
 void handleCommand()
